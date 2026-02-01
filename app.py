@@ -35,6 +35,21 @@ config_path = os.path.join("config", "config.toml")
 config = toml.load(config_path)
 
 
+# 🔐 Override secrets from ENV
+config["session_management_key"]["secret_key"] = (
+    os.getenv("SECRET_KEY") or config["session_management_key"]["secret_key"]
+)
+
+config["geminiai"]["api_key"] = (
+    os.getenv("GEMINI_API_KEY") or config["geminiai"]["api_key"]
+)
+
+config["weather"]["api_key"] = (
+    os.getenv("WEATHER_API_KEY") or config["weather"]["api_key"]
+)
+
+
+
 app = Flask(__name__)
 CORS(
     app,

@@ -1,14 +1,17 @@
 from pathlib import Path
 import toml
 from google import genai
+import os
 
 # Load config
 BASE_DIR = Path(__file__).resolve().parent.parent
 CONFIG_PATH = BASE_DIR / "config" / "config.toml"
 config = toml.load(CONFIG_PATH)
 
-GEMINI_API_KEY = config["geminiai"]["api_key"]
-MODEL_NAME = config["geminiai"]["model"]
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
 
 # Create Gemini client (NEW API)
 client = genai.Client(api_key=GEMINI_API_KEY)

@@ -1,5 +1,5 @@
 wearenv310/
-config/
+config/config1.toml 
 test.html
 *.pyc
 __pycache__/

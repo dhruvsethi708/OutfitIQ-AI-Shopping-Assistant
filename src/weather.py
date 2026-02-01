@@ -6,6 +6,12 @@ from datetime import datetime
 import os
 import toml
 
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+WEATHER_API_KEY = os.getenv("WEATHER_API_KEY")
+
+
 # Find base directory (WearPerfect folder)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Path to config file
