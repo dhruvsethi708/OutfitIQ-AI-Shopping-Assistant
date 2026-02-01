@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OutfitIQ - Login</title>
+  <style>
+    :root {
+  --bg-dark: #0b0b14;
+  --bg-card: #141427;
+  --purple: #7c7cff;
+  --purple-dark: #5b5bd6;
+  --text-light: #e5e7eb;
+  --text-muted: #9ca3af;
+  --border-dark: #2a2a40;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(
+    circle at top,
+    #1b1b3a 0%,
+    #0b0b14 60%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  color: var(--text-light);
+}
+
+/* Card */
+.auth-container {
+  background: linear-gradient(
+    180deg,
+    #16162c 0%,
+    #101022 100%
+  );
+  padding: 32px;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+
+  border: 1px solid var(--border-dark);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Heading */
+h2 {
+  margin-bottom: 22px;
+  color: var(--purple);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 11px 12px;
+  margin: 10px 0;
+  background-color: #0e0e1c;
+  border: 1px solid var(--border-dark);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--text-light);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--purple);
+  box-shadow: 0 0 0 2px rgba(124, 124, 255, 0.2);
+}
+
+/* Checkbox row */
+.auth-container div[style*="text-align"] {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+/* Button */
+button {
+  width: 100%;
+  background: linear-gradient(
+    135deg,
+    var(--purple),
+    var(--purple-dark)
+  );
+  color: white;
+  padding: 11px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 14px;
+  transition: all 0.25s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(124, 124, 255, 0.4);
+}
+
+/* Links */
+.switch-link {
+  margin-top: 16px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.switch-link a {
+  color: var(--purple);
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.switch-link a:hover {
+  text-decoration: underline;
+}
+
+/* Utility */
+.hidden {
+  display: none;
+}
+
+  </style>
+</head>
+<body>
+  <div class="auth-container" id="login-section">
+    <h2>Login</h2>
+    <input type="text" id="login-username" placeholder="Username">
+    <input type="password" id="login-password" placeholder="Password">
+    <div style="text-align: left;">
+      <input type="checkbox" id="login-show-password" onclick="togglePassword('login-password', 'login-show-password')"> Show Password
+    </div>
+    <button onclick="loginUser()">Login</button>
+    <div class="switch-link">New user? <a onclick="showRegister()">Register here</a></div>
+    <div class="switch-link">
+      Forgot your password? <a href="/reset_password_page">Reset here</a>
+    </div>
+  </div>
+  
+  
+
+  <div class="auth-container hidden" id="register-section">
+    <h2>Register</h2>
+    <input type="text" id="register-username" placeholder="Username">
+    <select id="register-gender" name="gender" required style="width: 105%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+      <option value="" disabled selected>Select gender</option>
+      <option value="Male">Male</option>
+      <option value="Female">Female</option>
+      <option value="Other">Other</option>
+    </select>  
+    <input type="password" id="register-password" placeholder="Password">
+    <input type="password" id="register-confirm-password" placeholder="Confirm Password">
+    <div style="text-align: left;">
+      <input type="checkbox" id="register-show-password" onclick="togglePassword('register-password', 'register-show-password'); togglePassword('register-confirm-password', 'register-show-password')"> Show Password
+    </div>
+    <button onclick="registerUser()">Register</button>
+    <div class="switch-link">Already have an account? <a onclick="showLogin()">Back to login</a></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      showLogin();  // Ensure only login shows on load
+    });
+
+    function showRegister() {
+      document.getElementById('login-section').classList.add('hidden');
+      document.getElementById('register-section').classList.remove('hidden');
+    }
+
+    function showLogin() {
+      document.getElementById('register-section').classList.add('hidden');
+      document.getElementById('login-section').classList.remove('hidden');
+    }
+
+    function togglePassword(fieldId, checkboxId) {
+      const field = document.getElementById(fieldId);
+      field.type = field.type === 'password' ? 'text' : 'password';
+    }
+
+    async function registerUser() {
+      const username = document.getElementById('register-username').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('register-confirm-password').value;
+      const gender = document.getElementById('register-gender').value;
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
+
+      const res = await fetch('/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, gender })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert('Registration successful! Please log in.');
+        showLogin();
+      } else {
+        alert(`Registration failed: ${data.error}`);
+      }
+    }
+
+    async function loginUser() {
+      const username = document.getElementById('login-username').value;
+      const password = document.getElementById('login-password').value;
+
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert('Login successful! Redirecting...');
+        window.location.href = '/app';
+      } else {
+        alert(`Login failed: ${data.error}`);
+      }
+    }
+  </script>
+</body>
+</html>
+

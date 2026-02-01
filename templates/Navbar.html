@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OutfitIQ</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+  --nav-bg: #0b0a12;
+  --nav-border: #1f1b33;
+  --purple: #8b5cf6;
+  --purple-soft: #a78bfa;
+  --text-main: #e5e7eb;
+  --text-muted: #9ca3af;
+}
+
+/* Navbar base */
+.wardrobe-gradient {
+  background-color: var(--nav-bg);
+  border-bottom: 1px solid var(--nav-border);
+}
+
+.navbar-content {
+  height: 64px;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+/* Center links */
+.nav-link {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--text-main);
+  background-color: rgba(139, 92, 246, 0.12);
+}
+
+.nav-link.active {
+  color: var(--purple-soft);
+  background-color: rgba(139, 92, 246, 0.18);
+}
+
+/* User profile */
+.user-profile {
+  gap: 10px;
+}
+
+.username {
+  color: var(--text-main);
+  font-size: 0.8rem;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(139, 92, 246, 0.15);
+  color: var(--purple-soft);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+/* Dropdown */
+.dropdown-menu {
+  background-color: #0f0d1a;
+  border: 1px solid var(--nav-border);
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.dropdown-item {
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 8px 12px;
+  transition: all 0.15s ease;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(139, 92, 246, 0.15);
+  color: var(--text-main);
+}
+
+/* Mobile menu */
+#mobileMenu {
+  background-color: #0b0a12;
+  border-top: 1px solid var(--nav-border);
+}
+
+    </style>
+</head>
+<body>
+    <nav class="wardrobe-gradient shadow-sm">
+        <div class="container position-relative">
+            <div class="d-flex flex-wrap align-items-center justify-content-between navbar-content">
+                <!-- Logo -->
+                <div class="order-1">
+                    <h1 class="text-white m-0 logo"><a href="/app" style="color:white;text-decoration:none">OutfitIQ</a></h1>
+                </div>
+
+                <!-- Centered Navigation Links -->
+                <div class="d-none d-md-flex nav-center gap-3 order-3 order-md-2">
+                    <a href="/app" class="nav-link">Online Wardrobe</a>
+                    <a href="/recommendation" class="nav-link">Instant Recommendation</a>
+                    <a href="/chatbot" class="nav-link">Tourist Chatbot</a>
+                </div>
+
+                <!-- User Profile Dropdown -->
+                <div class="order-2 order-md-3">
+                    <div class="dropdown">
+                        <div class="user-profile" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="username">{{ username }}</span>
+                            <div class="avatar">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="/" id="logoutButton" onclick="handleLogout()"><i class="bi bi-box-arrow-right me-2" ></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="d-md-none order-3">
+                    <button class="btn p-1" id="mobileMenuButton" style="color: white;">
+                        <i class="bi bi-list" style="font-size: 1.4rem;"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="d-md-none collapse" id="mobileMenu">
+                <div class="d-flex flex-column gap-1 py-2">
+                    <a href="/wardrobe" class="text-white text-decoration-none px-3 py-2">Online Wardrobe</a>
+                    <a href="/recommendation" class="text-white text-decoration-none px-3 py-2">Instant Recommendation</a>
+                    <a href="/chatbot" class="text-white text-decoration-none px-3 py-2">Tourist Chatbot</a>
+                    <div class="d-flex align-items-center px-3 py-2">
+                        <i class="bi bi-person-fill me-2 text-white"></i>
+                        <span class="text-white">{{ username }}</span>
+                    </div>
+                    <a href="#" class="text-white text-decoration-none px-3 py-2" id="mobileLogoutButton">
+                        <i class="bi bi-box-arrow-right me-2"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+
+        async function handleLogout() {
+    const res = await fetch("/logout", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+
+    if (res.ok) {
+      window.location.href = "/";
+    } else {
+      alert("Logout failed");
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = new bootstrap.Collapse(
+      document.getElementById('mobileMenu'),
+      { toggle: false }
+    );
+
+    mobileMenuButton.addEventListener('click', function () {
+      mobileMenu.toggle();
+    });
+  });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize dropdowns
+            const dropdownElementList = [].slice.call(document.querySelectorAll('[data-bs-toggle="dropdown"]'));
+            const dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl);
+            });
+            
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobileMenuButton');
+            const mobileMenu = new bootstrap.Collapse(document.getElementById('mobileMenu'), {
+                toggle: false
+            });
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.toggle();
+            });
+            
+            // Logout functionality
+            
+         async function logoutUser() {
+            const res = await fetch("/", { method: "POST" });
+            const data = await res.json();
+            if (res.ok) {
+            alert("Logged out successfully.");
+            window.location.href = "/";
+            } else {
+            alert(`Logout failed: ${data.error}`);
+            }
+        }
+            
+        });
+    </script>
+</body>
+</html>
